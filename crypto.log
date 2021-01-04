@@ -1,0 +1,19 @@
+ERROR:root:[Errno 2] No such file or directory: 'alphavantageapi.key'
+2021-01-04 13:44:51,535 [Errno 2] No such file or directory: 'alphavantageapi.key'
+2021-01-04 14:13:14,189 <built-in function execute_many> returned a result with an error set
+2021-01-04 14:16:22,257 
+
+2021-01-04 14:21:00,656 <built-in function execute_many> returned a result with an error set  
+2021-01-04 14:22:33,584 'int' object is not callable  
+2021-01-04 14:23:11,590 'int' object is not callable  
+2021-01-04 14:23:37,779 <built-in function execute_many> returned a result with an error set  
+2021-01-04 14:33:07,143 <built-in function execute_many> returned a result with an error set  
+2021-01-04 14:47:54,755 <built-in function execute_many> returned a result with an error set  
+2021-01-04 14:51:16,777 'int' object is not callable  
+2021-01-04 14:53:34,089 'int' object is not callable  
+2021-01-04 14:54:56,853 Connected to database.
+2021-01-04 14:54:56,939 3 records inserted into database.
+2021-01-04 14:54:56,943 Close connection.
+2021-01-04 14:56:54,403 Connected to database.
+2021-01-04 14:56:54,472 5 records inserted into database.
+2021-01-04 14:56:54,475 Close connection.

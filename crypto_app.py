@@ -1,30 +1,61 @@
+"""
+Application download current stock prices of 5 top crypto currency.
+Data are inserted to db2 database.
+"""
 import pandas as pd
 import requests
 import json
 import time
 import asyncio
 from datetime import datetime as dt
+import configparser
+import ibm_db
+import logging
+import sys
 
 
 coins = {'BTC': 'Bitcoin', 'ETH': 'Ethereum', 'LTC': 'Litecoin',
          'XRP': 'Ripple', 'USDT': 'Tether'
          }
 
+logging.basicConfig(format='%(asctime)s %(message)s',
+                    filename='crypto.log', level=logging.INFO)
 
 def get_apikey():
-    with open('alphavantageapi.key', 'r') as f:
-        return str(f.readline().strip())
-
+    #Load mandatory api key for alphavantage.com.
+    try:
+        with open('alphavantageapi.key', 'r') as f:
+            return str(f.readline().strip())
+    except OSError as e:
+        print('Error occured!')
+        logging.error(e)
+        sys.exit(1)
+    except Exception as e:
+        print('Error occured!')
+        logging.error(e)
+        sys.exit(1)
 
 def assemble_url(currency: str, wapi_key: str):
-    wurl = "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE"
-    return "".join([wurl, "&from_currency=", currency,
+    #Prepare complete url to be called.
+    try:
+        wurl = \
+        "https://www.alphavantage.co/query?function=CURRENCY_EXCHANGE_RATE"
+        return "".join([wurl, "&from_currency=", currency,
                     "&to_currency=EUR&apikey=", wapi_key])
-
+    except:
+        print('Error occured!')
+        logging.error(e)
+        sys.exit(1)
 
 def send_request(url: str):
+    #Call url using request module. Return values as string.
     return requests.get(url).text
 
+
+""""
+ --------
+|Not used|
+ --------
 
 def read_currencies():
     cur = pd.read_csv('digital_currency_list.csv', names=[
@@ -34,10 +65,56 @@ def read_currencies():
     for key, value in zip(cur['id'], cur['desc']):
         d[key] = value
     return d
+""""
+
+def connect_to_db():
+    #Read db2 parameters from config file and connect to db2.
+    #Return a connection object.
+    try:
+        filename = "db.ini"
+        cfg = configparser.ConfigParser()
+        cfg.read(filename)
+        con_str = 'DATABASE=' + cfg['CRYPTO']['database'] + \
+                  ';HOSTNAME=' + cfg['CRYPTO']['hostname'] + \
+                  ';PORT=' + cfg['CRYPTO']['port'] + \
+                  ';PROTOCOL=' + cfg['CRYPTO']['protocol'] + \
+                 ';UID=' + cfg['CRYPTO']['uid'] + \
+                ';PWD=' + cfg['CRYPTO']['pwd']
+        con = ibm_db.connect(con_str, '', '')
+    except Exception as e:
+        print('Error occured!')
+        logging.error(e, ibm_db.conn_errormsg())
+        sys.exit(1)
+    else:
+        return con
+
+
+def insert_data(sql, params):
+    #Insert crypto currencies data to database.
+    try:
+        con = connect_to_db()
+        logging.info('Connected to database.')
+        stmt = ibm_db.prepare(con, sql)
+        o = ibm_db.execute_many(stmt, tuple(params))
+        logging.info(f'{o} records inserted into database.')
+        ibm_db.free_stmt(stmt)
+        ibm_db.close(con)
+        logging.info('Close connection.')
+    except Exception as e:
+        print('Error occured!')
+        logging
+        logging.error(f'{e} {ibm_db.stmt_error()} {ibm_db.stmt_errormsg()}')
+        sys.exit(1)
 
 
 def main():
-    # start_time = time.perf_counter()
+    """
+    Main function calls functions in the proper order.
+    1. Get api key. 2. Handle requests sent in json format. 
+    3. Put entities first to a tuple then a list.
+    4. Insert the formatted values into db2.
+    """"
+    params = []
     wapi_key = get_apikey()
     for i in coins.keys():
         obj = json.loads(send_request(assemble_url(i, wapi_key)))
@@ -54,11 +131,17 @@ def main():
                 '9. Ask Price']
             rate = obj.get('Realtime Currency Exchange Rate')[
                 '5. Exchange Rate']
-            print(currency_id, currency_desc, date, bid_price, ask_price, rate)
+            params.append((currency_id, currency_desc, date, bid_price, \
+                                ask_price, rate))
         else:
-            print('exit 1', dt.now(), obj['Error Message'])
-#    print(f"Executed in {time.perf_counter() - start_time:.2f}s")
-
+            print('Error occured!')
+            logging.error(obj['Error Message'])
+            sys.exit(1)
+    sql = "insert into crypto.stock (currency_id, currency_name, cdate, bid, \
+                ask, rate) values(?, ?, ?, ?, ?, ?)"
+    insert_data(sql, params)
+    sys.exit(0)
+    
 
 if __name__ == '__main__':
     main()

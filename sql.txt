@@ -1,0 +1,20 @@
+select A.currency_id as currency, A.bid - B.bid as bid_price, A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'BTC' order by cdate desc fetch first 1 row only) A, 
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'BTC' order by cdate desc offset 1 rows fetch next 1 row only) B
+union 
+select A.currency_id as currency, A.bid - B.bid as bid_price, A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'LTC' order by cdate desc fetch first 1 row only) A, 
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'LTC' order by cdate desc offset 1 rows fetch next 1 row only) B
+union
+select A.currency_id as currency, A.bid - B.bid as bid_price, A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'ETH' order by cdate desc fetch first 1 row only) A, 
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'ETH' order by cdate desc offset 1 rows fetch next 1 row only) B
+union 
+select A.currency_id as currency, A.bid - B.bid as bid_price, A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'XRP' order by cdate desc fetch first 1 row only) A, 
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'XRP' order by cdate desc offset 1 rows fetch next 1 row only) B  
+union 
+select A.currency_id as currency, A.bid - B.bid as bid_price, A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'USDT' order by cdate desc fetch first 1 row only) A, 
+  (select currency_id, cdate, ask, bid, rate from crypto.stock where currency_id = 'USDT' order by cdate desc offset 1 rows fetch next 1 row only) B  
+

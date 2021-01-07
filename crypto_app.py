@@ -7,7 +7,6 @@ import requests
 import json
 import time
 import asyncio
-from datetime import datetime as dt
 import configparser
 import ibm_db
 import logging
@@ -52,7 +51,7 @@ def send_request(url: str):
     return requests.get(url).text
 
 
-""""
+"""
  --------
 |Not used|
  --------
@@ -65,7 +64,7 @@ def read_currencies():
     for key, value in zip(cur['id'], cur['desc']):
         d[key] = value
     return d
-""""
+"""
 
 def connect_to_db():
     #Read db2 parameters from config file and connect to db2.
@@ -113,12 +112,12 @@ def main():
     1. Get api key. 2. Handle requests sent in json format. 
     3. Put entities first to a tuple then a list.
     4. Insert the formatted values into db2.
-    """"
+    """
     params = []
     wapi_key = get_apikey()
     for i in coins.keys():
         obj = json.loads(send_request(assemble_url(i, wapi_key)))
-        if obj.get('Error Message') is None:
+        if obj.get('Error Message') is None and obj.get('Information') is None:
             currency_id = obj.get('Realtime Currency Exchange Rate')[
                 '1. From_Currency Code']
             currency_desc = obj.get('Realtime Currency Exchange Rate')[
@@ -135,7 +134,8 @@ def main():
                                 ask_price, rate))
         else:
             print('Error occured!')
-            logging.error(obj['Error Message'])
+            logging.error(f"{obj.get('Error Message') if obj.get('Error Message') else ''}"
+                          f"{obj.get('Information') if obj.get('Information') else ''}")
             sys.exit(1)
     sql = "insert into crypto.stock (currency_id, currency_name, cdate, bid, \
                 ask, rate) values(?, ?, ?, ?, ?, ?)"

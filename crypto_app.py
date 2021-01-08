@@ -2,15 +2,12 @@
 Application download current stock prices of 5 top crypto currency.
 Data are inserted to db2 database.
 """
-import pandas as pd
-import requests
 import json
-import time
-import asyncio
 import configparser
-import ibm_db
 import logging
 import sys
+import requests
+import ibm_db
 
 
 coins = {'BTC': 'Bitcoin', 'ETH': 'Ethereum', 'LTC': 'Litecoin',
@@ -31,7 +28,7 @@ def get_apikey():
         sys.exit(1)
     except Exception as e:
         print('Error occured!')
-        logging.error(f'{e}'))
+        logging.error(f'{e}')
         sys.exit(1)
 
 def assemble_url(currency: str, wapi_key: str):
@@ -106,10 +103,18 @@ def insert_data(sql, params):
         sys.exit(1)
 
 
+def query_from_crypto(sql, params):
+    try:
+        con = connect_to_db()
+    except Exception as e:
+        logging
+        logging.error(f'{e} {ibm_db.stmt_error()} {ibm_db.stmt_errormsg()}')
+        sys.exit(1)
+
 def main():
     """
     Main function calls functions in the proper order.
-    1. Get api key. 2. Handle requests sent in json format. 
+    1. Get api key. 2. Handle requests sent in json format.
     3. Put entities first to a tuple then a list.
     4. Insert the formatted values into db2.
     """
@@ -141,7 +146,7 @@ def main():
                 ask, rate) values(?, ?, ?, ?, ?, ?)"
     insert_data(sql, params)
     sys.exit(0)
-    
+
 
 if __name__ == '__main__':
     main()

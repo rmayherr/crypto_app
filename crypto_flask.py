@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import url_for
 from flask import render_template
+from crypto_app import query_from_crypto
 
 
 app = Flask(__name__)

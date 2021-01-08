@@ -27,11 +27,11 @@ def get_apikey():
             return str(f.readline().strip())
     except OSError as e:
         print('Error occured!')
-        logging.error(e)
+        logging.error(f'{e}')
         sys.exit(1)
     except Exception as e:
         print('Error occured!')
-        logging.error(e)
+        logging.error(f'{e}'))
         sys.exit(1)
 
 def assemble_url(currency: str, wapi_key: str):
@@ -43,7 +43,7 @@ def assemble_url(currency: str, wapi_key: str):
                     "&to_currency=EUR&apikey=", wapi_key])
     except:
         print('Error occured!')
-        logging.error(e)
+        logging.error(f'{e}')
         sys.exit(1)
 
 def send_request(url: str):
@@ -82,7 +82,7 @@ def connect_to_db():
         con = ibm_db.connect(con_str, '', '')
     except Exception as e:
         print('Error occured!')
-        logging.error(e, ibm_db.conn_errormsg())
+        logging.error(f'{e} {ibm_db.conn_errormsg()}')
         sys.exit(1)
     else:
         return con

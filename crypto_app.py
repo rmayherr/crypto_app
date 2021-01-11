@@ -2,6 +2,7 @@
 Application download current stock prices of 5 top crypto currency.
 Data are inserted to db2 database.
 """
+import os.path
 import json
 import configparser
 import logging
@@ -15,12 +16,14 @@ coins = {'BTC': 'Bitcoin', 'ETH': 'Ethereum', 'LTC': 'Litecoin',
          }
 
 logging.basicConfig(format='%(asctime)s %(message)s',
-                    filename='crypto.log', level=logging.INFO)
+                    filename=os.path.join(os.path.dirname(__file__), \
+                    'crypto.log'), level=logging.INFO)
 
 def get_apikey():
     #Load mandatory api key for alphavantage.com.
     try:
-        with open('alphavantageapi.key', 'r') as f:
+        with open(os.path.join(os.path.dirname(__file__), \
+                  'alphavantageapi.key'), 'r') as f:
             return str(f.readline().strip())
     except OSError as e:
         print('Error occured!')
@@ -67,7 +70,7 @@ def connect_to_db():
     #Read db2 parameters from config file and connect to db2.
     #Return a connection object.
     try:
-        filename = "db.ini"
+        filename = os.path.join(os.path.dirname(__file__), 'db.ini')
         cfg = configparser.ConfigParser()
         cfg.read(filename)
         con_str = 'DATABASE=' + cfg['CRYPTO']['database'] + \

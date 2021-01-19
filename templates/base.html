@@ -12,37 +12,44 @@
   </head>
   <body>
     <!-- Image and text -->
-    <nav class="navbar navbar-light bg-light">
+    <nav class="navbar navbar-light bg-light bg-gradient">
       <div class="container-fluid">
-         <span class="navbar-brand mb-0 h1"> 
+        <span class="navbar-brand mb-0 h1"> 
           <img src="static/btc.svg" alt="" width="30" height="24" class="d-inline-block align-top">
           <img src="static/eth.png" alt="" width="30" height="24" class="d-inline-block align-top">
           <img src="static/ltc.png" alt="" width="30" height="24" class="d-inline-block align-top">
           <img src="static/usdt.png" alt="" width="30" height="24" class="d-inline-block align-top">
           <img src="static/xrp.jpg" alt="" width="30" height="24" class="d-inline-block align-top">
-          Crypto stock market </span>
-        </a>
+          <span class="text-primary">Crypto stock market</span> 
+        </span>
+        
       </div>
     </nav>
-    <div class="position-relative">
-      <div class="position-absolute top-0 start-50 translate-middle">
-        <div class="col-md-4">
-                <table class="table table-striped table-hover">
-                    <tbody>
-                            {% for i in tables %}
-                        <tr>
-                            <th scope="row"></th>
-                                <td>{{ i[1] }} </td>
-                                <td>{{ i[2] }}</td>
-                                <td>{{ i[3] }}</td>  
-                                <td>{{ i[4] }} </td>
-                                <td>{{ i[5] }}</td>
-                                <td>{{ i[6] }}</td>                                                        
-                        </tr>
-                            {% endfor %}
-                    </tbody>
-                </table>
-          </div>
+    <br>
+    <div class="container">
+      <div class="position-relative">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+              <tr>
+                <td colspan="2">Currency</td>
+                <td>Bid price</td>
+                <td>Ask price</td>
+                <td>Rate</td>
+              </tr>
+            </thead>
+            <tbody>
+                    {% for i in tables %}
+                <tr>
+                  <td>{{ i[0] }}</td>
+                  <td>{{ i[1] }}</td>
+                  <td>{{ i[2] }}</td>  
+                  <td>{{ i[3] }}</td>
+                  <td>{{ i[4] }}</td>
+                  <td>{{ i[5] }}</td> 
+                </tr>
+                    {% endfor %}
+            </tbody>
+        </table>
       </div>
     </div>
     <!-- Optional JavaScript; choose one of the two! -->

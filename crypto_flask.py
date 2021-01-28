@@ -13,8 +13,8 @@ app.secret_key = os.urandom(32).decode('utf-8', errors='ignore')
 
 @app.route('/')
 def index():
-    return render_template('base.html')
-
+	result = query_from_crypto()
+	return render_template('base.html', tables=result)
 
 with app.test_request_context():
     print(url_for('index'))

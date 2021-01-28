@@ -106,9 +106,73 @@ def insert_data(sql, params):
         sys.exit(1)
 
 
-def query_from_crypto(sql, params):
+def query_from_crypto():
+    out = []
     try:
+        sql = """
+                select A.currency_id as currency, A.currency_name, 
+                A.bid - B.bid as bid_price, 
+                A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+                (select currency_id, currency_name, cdate, ask, bid, rate from 
+                crypto.stock 
+                where currency_id = 'BTC' order by cdate desc 
+                fetch first 1 row only) A, 
+                (select currency_id, cdate, ask, bid, rate from crypto.stock 
+                where currency_id = 'BTC' order by cdate desc 
+                offset 1 rows fetch next 1 row only) B
+                union 
+                select A.currency_id as currency, A.currency_name,
+                A.bid - B.bid as bid_price, 
+                A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+                (select currency_id, currency_name, cdate, ask, bid, rate from 
+                crypto.stock 
+                where currency_id = 'LTC' order by cdate desc 
+                fetch first 1 row only) A, 
+                (select currency_id, cdate, ask, bid, rate from crypto.stock 
+                where currency_id = 'LTC' order by cdate desc 
+                offset 1 rows fetch next 1 row only) B
+                union
+                select A.currency_id as currency, A.currency_name,
+                A.bid - B.bid as bid_price, 
+                A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+                (select currency_id, currency_name, cdate, ask, bid, rate from 
+                crypto.stock 
+                where currency_id = 'ETH' order by cdate desc 
+                fetch first 1 row only) A, 
+                (select currency_id, cdate, ask, bid, rate from crypto.stock 
+                where currency_id = 'ETH' order by cdate desc 
+                offset 1 rows fetch next 1 row only) B
+                union 
+                select A.currency_id as currency, A.currency_name,
+                A.bid - B.bid as bid_price, 
+                A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+                (select currency_id, currency_name, cdate, ask, bid, rate from 
+                crypto.stock 
+                where currency_id = 'XRP' order by cdate desc
+                fetch first 1 row only) A, 
+                (select currency_id, cdate, ask, bid, rate from crypto.stock 
+                where currency_id = 'XRP' order by cdate desc 
+                offset 1 rows fetch next 1 row only) B  
+                union 
+                select A.currency_id as currency, A.currency_name,
+                A.bid - B.bid as bid_price, 
+                A.ask - B.ask as ask_price, A.rate - B.rate as rate_price from
+                (select currency_id, currency_name, cdate, ask, bid, rate from 
+                crypto.stock 
+                where currency_id = 'USDT' order by cdate desc 
+                fetch first 1 row only) A, 
+                (select currency_id, cdate, ask, bid, rate from crypto.stock 
+                where currency_id = 'USDT' order by cdate desc 
+                offset 1 rows fetch next 1 row only) B  
+              """
         con = connect_to_db()
+        stmt = ibm_db.prepare(con, sql)
+        ibm_db.execute(stmt)
+        result = ibm_db.fetch_tuple(stmt)
+        while result:
+            out.append(result)
+            result = ibm_db.fetch_tuple(stmt)
+        return out
     except Exception as e:
         logging
         logging.error(f'{e} {ibm_db.stmt_error()} {ibm_db.stmt_errormsg()}')

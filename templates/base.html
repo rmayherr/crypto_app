@@ -42,10 +42,27 @@
                 <tr>
                   <td>{{ i[0] }}</td>
                   <td>{{ i[1] }}</td>
-                  <td>{{ i[2] }}</td>  
-                  <td>{{ i[3] }}</td>
-                  <td>{{ i[4] }}</td>
-                  <td>{{ i[5] }}</td> 
+                  <td>
+                    {% if i[2][0] == '-' %}
+                      <p class="text-danger">{{ i[2] }}</p>
+                    {% else %}
+                      <p class="text-success">{{ i[2] }}</p>
+                    {% endif %} 
+                  </td>  
+                  <td>
+                    {% if i[3][0] == '-' %}
+                      <p class="text-danger">{{ i[3] }}</p>
+                    {% else %}
+                      <p class="text-success">{{ i[3] }}</p>
+                    {% endif %} 
+                  </td> 
+                  <td>
+                    {% if i[4][0] == '-' %}
+                      <p class="text-danger">{{ i[4] }}</p>
+                    {% else %}
+                      <p class="text-success">{{ i[4] }}</p>
+                    {% endif %} 
+                  </td> 
                 </tr>
                     {% endfor %}
             </tbody>

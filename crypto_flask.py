@@ -10,7 +10,7 @@ from flask_caching import Cache
 # flask run or python3 -m flask crypto_flask
 config = {
 	"DEBUG" : True,
-	"CACHE_TYPE" : "simple"
+	"CACHE_TYPE" : "simple",
 	"CACHE_DEFAULT_TIMEOUT" : 60
 }
 app = Flask(__name__)
@@ -23,7 +23,7 @@ def index():
 	result = get_result()
 	return render_template('base.html', tables=result)
 
-@memoize(60)
+@cache.memoize(60)
 def get_result():
 	result = query_from_crypto()
 	return result
